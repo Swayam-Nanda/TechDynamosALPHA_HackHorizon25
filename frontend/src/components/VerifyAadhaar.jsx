@@ -1,82 +1,96 @@
 import { useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebase/firebaseConfig"; // Firebase config
-import { doc, getDoc } from "firebase/firestore";
-import { collection, query, where, getDocs } from "firebase/firestore";
 
 export default function VerifyAadhaar() {
   const [aadhaar, setAadhaar] = useState("");
+  const [otp, setOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
+  const [step, setStep] = useState(1);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleAadhaarChange = (e) => {
-    setAadhaar(e.target.value);
-  };
-
-  const verifyAadhaar = async () => {
-    if (!aadhaar) {
-      setError("Please enter your Aadhaar number.");
-      return;
-    }
-
+  const handleAadhaarSubmit = async () => {
+    setError("");
     try {
       const q = query(
         collection(db, "aadhaarData"),
-        where("aadhar", "==", aadhaar),
-        where("used", "==", false)
+        where("aadhar", "==", aadhaar)
       );
+      const snapshot = await getDocs(q);
 
-      const querySnapshot = await getDocs(q);
-
-      if (!querySnapshot.empty) {
-        const docData = querySnapshot.docs[0].data();
-
-        // Store Aadhaar and docId for further use if needed
-        sessionStorage.setItem("verifiedAadhaar", aadhaar);
-        sessionStorage.setItem("aadhaarDocId", querySnapshot.docs[0].id);
-        sessionStorage.setItem("phone", docData.phone); // Optional: for OTP
-        navigate("/signup"); // Redirect to signup
-      } else {
-        setError("Aadhaar number not found, already used, or invalid.");
+      if (snapshot.empty) {
+        setError("❌ Aadhaar not found. Please try again.");
+        return;
       }
+
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedOtp(otp);
+
+      // Show OTP in alert (mocking email send)
+      alert(`📧 OTP sent to registered email: ${otp}`);
+
+      setStep(2); // move to OTP input step
     } catch (err) {
-      console.error("Error verifying Aadhaar:", err.message);
-      setError("Something went wrong, please try again.");
+      console.error(err);
+      setError("⚠️ Something went wrong while verifying Aadhaar.");
+    }
+  };
+
+  const handleOtpVerify = () => {
+    if (otp === generatedOtp) {
+      sessionStorage.setItem("verifiedAadhaar", aadhaar);
+      alert("✅ Aadhaar verified successfully!");
+      navigate("/signup");
+    } else {
+      setError("❌ Incorrect OTP. Try again.");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-6">
-      <div className="max-w-md mx-auto bg-gray-900 p-8 rounded-lg shadow-lg">
+    <div className="min-h-screen bg-gray-950 text-white p-6 flex justify-center items-center">
+      <div className="max-w-md bg-gray-900 p-8 rounded-lg shadow-lg w-full">
         <h2 className="text-2xl font-bold mb-4 text-emerald-400">
-          Aadhaar Verification
+          Verify Aadhaar
         </h2>
         {error && <p className="text-red-400 mb-4">{error}</p>}
 
-        <input
-          type="text"
-          placeholder="Enter Aadhaar Number"
-          value={aadhaar}
-          onChange={handleAadhaarChange}
-          className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none mb-4"
-        />
+        {step === 1 && (
+          <>
+            <input
+              type="text"
+              placeholder="Enter Aadhaar Number"
+              value={aadhaar}
+              onChange={(e) => setAadhaar(e.target.value)}
+              className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none mb-4"
+            />
+            <button
+              onClick={handleAadhaarSubmit}
+              className="w-full bg-emerald-500 hover:bg-emerald-600 py-2 rounded font-semibold"
+            >
+              Send OTP
+            </button>
+          </>
+        )}
 
-        <button
-          onClick={verifyAadhaar}
-          className="w-full bg-emerald-500 hover:bg-emerald-600 py-2 rounded font-semibold"
-        >
-          Verify Aadhaar
-        </button>
-
-        <p className="mt-2 text-center text-sm text-gray-400">
-          Already have an account?{" "}
-          <span
-            className="text-emerald-400 hover:underline cursor-pointer"
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </span>
-        </p>
+        {step === 2 && (
+          <>
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none mb-4"
+            />
+            <button
+              onClick={handleOtpVerify}
+              className="w-full bg-emerald-500 hover:bg-emerald-600 py-2 rounded font-semibold"
+            >
+              Verify OTP
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

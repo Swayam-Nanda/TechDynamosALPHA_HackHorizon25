@@ -36,7 +36,7 @@ export default function Navbar() {
           <img
             src="/assets/logo.jpg" // Reference the logo directly from public/assets
             alt="Virtual Police Station"
-            className="h-10"
+            className="w-12 h-12 rounded-full object-cover"
           />
           {/* Website Name */}
           <div className="text-2xl font-semibold text-emerald-400">

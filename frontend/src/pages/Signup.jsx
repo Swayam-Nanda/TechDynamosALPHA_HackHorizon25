@@ -3,13 +3,12 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  signInWithPopup,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../firebase/firebaseConfig";
-
-import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../firebase/firebaseConfig";
+import { db, auth, googleProvider } from "../firebase/firebaseConfig";
 import { useNavigate } from "react-router-dom";
+
 export default function Signup() {
   const [form, setForm] = useState({
     username: "",
@@ -18,7 +17,6 @@ export default function Signup() {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const auth = getAuth();
 
   const handleGoogleSignIn = async () => {
     try {
@@ -26,24 +24,22 @@ export default function Signup() {
       const user = result.user;
       console.log("Google Sign-In Success:", user);
 
-      // Optionally save user info to Firestore
       const aadhaar = sessionStorage.getItem("verifiedAadhaar");
-
       if (!aadhaar) {
         setError("Aadhaar not verified. Please verify before signing up.");
         return;
       }
 
-      // You can check if user already exists in db or add them
       await setDoc(doc(db, "users", user.uid), {
         username: user.displayName || "Google User",
         email: user.email,
         aadhaar,
         provider: "google",
-        createdAt: new Date(),
+        createdAt: Date.now(),
       });
 
-      navigate("/"); // Redirect to homepage or dashboard
+      sessionStorage.removeItem("verifiedAadhaar");
+      navigate("/");
     } catch (error) {
       console.error("Google Sign-In Error:", error.message);
       setError("Google sign-in failed.");
@@ -86,9 +82,11 @@ export default function Signup() {
         username,
         email,
         aadhaar,
-        createdAt: new Date(),
+        provider: "email",
+        createdAt: Date.now(),
       });
 
+      sessionStorage.removeItem("verifiedAadhaar");
       alert("✅ Registered successfully! Please verify your email.");
       navigate("/login");
     } catch (err) {
@@ -136,8 +134,15 @@ export default function Signup() {
         />
 
         <button
+          onClick={handleSignup}
+          className="w-full bg-emerald-500 hover:bg-emerald-600 py-2 rounded font-semibold"
+        >
+          Sign Up
+        </button>
+
+        <button
           onClick={handleGoogleSignIn}
-          className="w-full bg-red-500 hover:bg-red-600 py-2 rounded font-semibold mt-4 flex items-center justify-center gap-2"
+          className="w-full bg-gray-500 hover:bg-gray-600 py-2 rounded font-semibold mt-4 flex items-center justify-center gap-2"
         >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -145,13 +150,6 @@ export default function Signup() {
             className="w-5 h-5"
           />
           Continue with Google
-        </button>
-
-        <button
-          onClick={handleSignup}
-          className="w-full bg-emerald-500 hover:bg-emerald-600 py-2 rounded font-semibold"
-        >
-          Sign Up
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-400">

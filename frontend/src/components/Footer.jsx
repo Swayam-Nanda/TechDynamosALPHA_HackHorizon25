@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaInstagram, FaLinkedin, FaGithub } from "react-icons/fa";
+import { SiX } from "react-icons/si"; // X (formerly Twitter)
 
 function Footer() {
   return (
@@ -55,17 +56,32 @@ function Footer() {
           <p className="text-sm">Email: support@virtualpolice.in</p>
           <p className="text-sm">Phone: +91 12345 67890</p>
           <div className="flex gap-4 mt-4 text-2xl">
-            <a href="#" className="hover:text-blue-500">
-              <FaFacebook />
-            </a>
-            <a href="#" className="hover:text-sky-400">
-              <FaTwitter />
+            <a
+              href="https://x.com/SWAYAM_NANDA_?t=6EeYy5pfxpuBtpyjMVwEAQ&s=08"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white"
+            >
+              <SiX />
             </a>
             <a href="#" className="hover:text-pink-500">
               <FaInstagram />
             </a>
-            <a href="#" className="hover:text-blue-300">
+            <a
+              href="https://www.linkedin.com/in/swayam-nanda-676b02285?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app "
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-blue-300"
+            >
               <FaLinkedin />
+            </a>
+            <a
+              href="https://github.com/Swayam-Nanda"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-100"
+            >
+              <FaGithub />
             </a>
           </div>
         </div>

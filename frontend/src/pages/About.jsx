@@ -3,27 +3,27 @@ import React from "react";
 const teamMembers = [
   {
     name: "Swayam Nanda",
-    role: "Team Leader & Frontend Dev",
-    image: "https://via.placeholder.com/150", // Replace with actual pic URL
-    bio: "Leads with code and chaos. UI wizard and bug hunter.",
+    role: "Project Lead & Backend + Frontend Manager",
+    image: "/assets/swayam.jpg",
+    bio: "Swayam oversees the entire development process, ensuring smooth coordination between backend and frontend workflows. With a strong focus on both functionality and user experience, he leads the team with technical expertise and strategic planning.",
   },
   {
     name: "Roshan",
-    role: "Firebase & Integration",
-    image: "https://via.placeholder.com/150",
-    bio: "Keeps the backend from burning. Talks to Firestore like it’s a therapist.",
+    role: "UI Designer & Authentication Developer",
+    image: "/assets/roshan.jpg",
+    bio: "Roshan contributes to both the visual interface and the implementation of user authentication mechanisms. He ensures secure user onboarding while maintaining a consistent and user-friendly design throughout the application.",
   },
   {
     name: "Om",
-    role: "UI Designer & Docs",
-    image: "https://via.placeholder.com/150",
-    bio: "Designs interfaces that even your grandma can use. Probably drinking chai.",
+    role: "Database Manager",
+    image: "/assets/om.jpg",
+    bio: "Om is responsible for managing and structuring the application’s database. He ensures data integrity, security, and efficient data flow, enabling seamless performance across the platform.",
   },
   {
     name: "Kunal",
-    role: "Testing & Debugging",
-    image: "https://via.placeholder.com/150",
-    bio: "Finds bugs faster than mosquitoes in monsoon. Peaceful chaos engineer.",
+    role: "UI Designer",
+    image: "/assets/kunal.jpg",
+    bio: "Kunal focuses on creating intuitive and accessible user interfaces. His attention to design aesthetics and usability helps deliver a smooth and engaging experience for end users.",
   },
 ];
 
